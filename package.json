@@ -1,0 +1,22 @@
+{
+  "name": "com.shashankbiplav.ecommerceapp",
+  "version": "1.0.0",
+  "description": "NodeJS eCommerce Application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShashankBiplav/eCommerceAppNodeJS.git"
+  },
+  "author": "Shashank Biplav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShashankBiplav/eCommerceAppNodeJS/issues"
+  },
+  "homepage": "https://github.com/ShashankBiplav/eCommerceAppNodeJS#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
