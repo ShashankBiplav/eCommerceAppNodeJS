@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
 
 app.use(bodyParser.urlencoded({extended: false}));// this yields a middleware function to parse the incoming requests
+app.use(express.static(path.join(__dirname,'public')));// path created to access public directory
 
 app.use('/admin',adminRoutes); //filtering the path via ->  /admin
 
