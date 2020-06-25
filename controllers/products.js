@@ -1,10 +1,9 @@
 const Product = require('../models/product.js');
 
 exports.getAddProductPage = (req, res, next)=>{
-   //fetching data from products array
-    res.render('add-product', {
-        pageTitle: 'Add Product',
-        path: '/admin/add-product',
+    res.render('admin/add-product', {
+        pageTitle: 'Add Product', // used in header
+        path: '/admin/add-product', // to set active path
         formsCSS: true,
         productCSS: true,
         activeAddProduct: true
@@ -12,9 +11,7 @@ exports.getAddProductPage = (req, res, next)=>{
 }
 
 exports.postAddNewProduct = (req, res, next)=>{
-    // products.push({title: req.body.title});  // pushing data into products array 
-    // console.log('In product middleware');
-    // console.log(req.body.title);
+    
     const product = new Product(req.body.title);
     product.save();
    res.redirect('/');
@@ -22,10 +19,10 @@ exports.postAddNewProduct = (req, res, next)=>{
 
 exports.getproducts= (req, res, next)=>{
   const products = Product.fetchAll((products)=>{
-    res.render('shop', {
+    res.render('shop/product-list', {
       prods: products,
-      pageTitle: 'Shop',
-      path: '/',
+      pageTitle: 'Shop', // used in header
+      path: '/', // to set active path
       hasProducts: products.length > 0,
       activeShop: true,
       productCSS: true
