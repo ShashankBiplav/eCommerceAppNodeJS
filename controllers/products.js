@@ -1,4 +1,4 @@
-const products = []; // temporary array to keep data
+const Product = require('../models/product.js');
 
 exports.getAddProductPage = (req, res, next)=>{
    //fetching data from products array
@@ -12,14 +12,16 @@ exports.getAddProductPage = (req, res, next)=>{
 }
 
 exports.postAddNewProduct = (req, res, next)=>{
-    products.push({title: req.body.title});  // pushing data into products array 
-    console.log('In product middleware');
-    console.log(req.body.title);
-    
+    // products.push({title: req.body.title});  // pushing data into products array 
+    // console.log('In product middleware');
+    // console.log(req.body.title);
+    const product = new Product(req.body.title);
+    product.save();
    res.redirect('/');
 }
 
 exports.getproducts= (req, res, next)=>{
+  const products = Product.fetchAll();
   res.render('shop', {
     prods: products,
     pageTitle: 'Shop',
