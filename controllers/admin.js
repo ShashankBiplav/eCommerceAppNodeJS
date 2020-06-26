@@ -1,5 +1,6 @@
 const Product = require('../models/product.js');
 
+
 exports.getAddProductPage = (req, res, next)=>{
     res.render('admin/add-product', {
         pageTitle: 'Add Product', // used in header
@@ -11,22 +12,17 @@ exports.getAddProductPage = (req, res, next)=>{
 }
 
 exports.postAddNewProduct = (req, res, next)=>{
-    
-    const product = new Product(req.body.title);
+   const product = new Product(req.body.title);
     product.save();
    res.redirect('/');
 }
 
-exports.getproducts= (req, res, next)=>{
-  const products = Product.fetchAll((products)=>{
-    res.render('shop/product-list', {
-      prods: products,
-      pageTitle: 'Shop', // used in header
-      path: '/', // to set active path
-      hasProducts: products.length > 0,
-      activeShop: true,
-      productCSS: true
-    });
-  });
- 
+exports.getProducts = (req, res, next) =>{
+    Product.fetchAll((products)=>{
+        res.render('admin/products', {
+          prods: products,
+          pageTitle: 'Admin Products', // used in header
+          path: '/admin/products', // to set active path
+        });
+      });
 }

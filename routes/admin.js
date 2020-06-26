@@ -4,14 +4,18 @@ const express = require('express');
 
 const router = express.Router();
 
-const productsController = require('../controllers/products.js');
+const adminController = require('../controllers/admin.js');
 
 
 //   /admin/add-product ->GET request
-router.get('/add-product', productsController.getAddProductPage);
+router.get('/add-product', adminController.getAddProductPage);
+
+// /admin/products -> GET request
+router.get('/products', adminController.getProducts);
+
 
 //   /admin/add-product ->POST request
-router.post('/add-product',productsController.postAddNewProduct);
+router.post('/add-product',adminController.postAddNewProduct);
 
 module.exports = router; //  exporting two properties therefore this syntax
  
