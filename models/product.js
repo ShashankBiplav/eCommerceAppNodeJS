@@ -25,7 +25,7 @@ module.exports = class Product {
         this.price = price;
     }
     save() {
-       
+       this.id = Math.random().toString();
         getProductsFromFile((products) => {
             products.push(this);
             fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -35,5 +35,11 @@ module.exports = class Product {
     }
     static fetchAll(callback) { //this is async code so use a callback
         getProductsFromFile(callback);
+    }
+    static findById(id, callback){
+        getProductsFromFile((products)=>{
+            const product = products.find((prod)=> prod.id === id);
+            callback(product);
+        });
     }
 }

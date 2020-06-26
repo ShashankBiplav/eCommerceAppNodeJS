@@ -9,7 +9,7 @@ exports.getAddProductPage = (req, res, next)=>{
         productCSS: true,
         activeAddProduct: true
       });
-}
+};
 
 exports.postAddNewProduct = (req, res, next)=>{
   const title = req.body.title;
@@ -19,7 +19,7 @@ exports.postAddNewProduct = (req, res, next)=>{
    const product = new Product(title, imageUrl, description, price);
     product.save();
    res.redirect('/');
-}
+};
 
 exports.getProducts = (req, res, next) =>{
     Product.fetchAll((products)=>{
@@ -29,4 +29,4 @@ exports.getProducts = (req, res, next) =>{
           path: '/admin/products', // to set active path
         });
       });
-}
+};
