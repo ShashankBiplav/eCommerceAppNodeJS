@@ -3,13 +3,14 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = require('../util/path.js');
+const { json } = require('body-parser');
 
 const p = path.join(rootDir, 'data', 'cart.json');
 
 module.exports = class Cart{
     static addProduct(id, productPrice){
         fs.readFile(p,(err, fileContent)=>{
-            //Fetch the previous cart or create a new one-fi no cart is available
+            //Fetch the previous cart or create a new one-if no cart is available
             let cart = {products:[], totalPrice:0.0};
             if (!err) {
                 cart = JSON.parse(fileContent);
@@ -35,5 +36,19 @@ module.exports = class Cart{
             });
         });
     }
-
+    static deleteProduct(id, productPrice){
+        fs.readFile(p, (err, fileContent)=>{
+            if (err) {
+                return;
+            }
+            const updatedCart = {...JSON.parse(fileContent)};
+            const product = updatedCart.products.findIndex((prod)=>prod.id === id);
+            const productQty = product.qty;
+            updatedCart.products = updatedCart.products.filter((prod)=> prod.id!== id);
+            updatedCart.totalPrice = updatedCart.totalPrice - productPrice*productQty;
+            fs.writeFile(p,JSON.stringify(updatedCart),err =>{
+                console.log(err);
+            });
+        });
+    }
 }
