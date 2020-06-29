@@ -3,11 +3,10 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = require('../util/path.js');
-const { json } = require('body-parser');
 
 const p = path.join(rootDir, 'data', 'cart.json');
 
-module.exports = class Cart{
+module.exports = class Cart{ 
     static addProduct(id, productPrice){
         fs.readFile(p,(err, fileContent)=>{
             //Fetch the previous cart or create a new one-if no cart is available

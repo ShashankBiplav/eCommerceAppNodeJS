@@ -19,6 +19,10 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
 
+db.execute('SELECT * FROM products')
+.then((result)=>{console.log(result[0])})
+.catch(err=> console.log(err));
+
 app.use(bodyParser.urlencoded({extended: false}));// this yields a middleware function to parse the incoming requests
 app.use(express.static(path.join(__dirname,'public')));// path created to access public directory
 
