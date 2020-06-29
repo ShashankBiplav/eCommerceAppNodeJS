@@ -1,14 +1,10 @@
-// const http = require('http');
 const path = require('path');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error.js');
 
-const db = require('./util/database.js');
-
-const rootDir = require('./util/path.js');
+const sequelize = require('./util/database');
 
 const app = express();
 
@@ -18,10 +14,6 @@ app.set('views', 'views');
 
 const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
-
-db.execute('SELECT * FROM products')
-.then((result)=>{console.log(result[0])})
-.catch(err=> console.log(err));
 
 app.use(bodyParser.urlencoded({extended: false}));// this yields a middleware function to parse the incoming requests
 app.use(express.static(path.join(__dirname,'public')));// path created to access public directory
@@ -34,5 +26,14 @@ app.use(errorController.get404page);
 // const server = http.createServer(app);
 
 // server.listen(3000);
-app.listen(3000);
+sequelize.sync()
+.then(result =>{
+    // console.log(result);
+    app.listen(3000);
+})
+.catch(err=>{
+    console.log(err);
+});
+
+
 
