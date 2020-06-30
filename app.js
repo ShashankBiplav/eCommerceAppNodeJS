@@ -8,6 +8,8 @@ const sequelize = require('./util/database');
 
 const Product = require('./models/product.js');
 const User = require('./models/user.js');
+const Cart = require('./models/cart.js');
+const CartItem = require('./models/cart-item.js');
 
 const app = express();
 
@@ -45,8 +47,14 @@ Product.belongsTo(User, {
 });
 User.hasMany(Product);
 
+//associating user with cart model and cart to Product
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product,{through:CartItem});
+Product.belongsToMany(Cart, {through:CartItem});
+
 // server.listen(3000);
-sequelize.sync() //sequelize.sync({force: true}) , set force: true to overwrite the existing table in DB
+sequelize.sync({force: true}) //sequelize.sync({force: true}) , set force: true to overwrite the existing table in DB
     .then(result => {
         return User.findByPk(1);
     })
