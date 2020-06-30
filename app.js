@@ -54,7 +54,7 @@ Cart.belongsToMany(Product,{through:CartItem});
 Product.belongsToMany(Cart, {through:CartItem});
 
 // server.listen(3000);
-sequelize.sync({force: true}) //sequelize.sync({force: true}) , set force: true to overwrite the existing table in DB
+sequelize.sync() //sequelize.sync({force: true}) , set force: true to overwrite the existing table in DB
     .then(result => {
         return User.findByPk(1);
     })
@@ -65,7 +65,11 @@ sequelize.sync({force: true}) //sequelize.sync({force: true}) , set force: true 
         return user;
     })
     .then(user =>{
-        console.log(user);
+        // console.log(user);
+        return user.createCart();
+    })
+    .then(cart=>{
+        // console.log(cart);
         app.listen(3000);
     })
     .catch(err => {
