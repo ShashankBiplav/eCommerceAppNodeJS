@@ -14,7 +14,7 @@ exports.postAddNewProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
-  Product.create({
+  req.user.createProduct({
       title: title,
       imageUrl: imageUrl,
       description: description,
@@ -35,7 +35,10 @@ exports.getEditProductPage = (req, res, next) => {
     return res.redirect('/');
   }
   const productId = req.params.productId;
-  Product.findByPk(productId).then((product) => {
+  req.user.getProducts({where:{id: productId}})
+  // Product.findByPk(productId)
+  .then((products) => {
+    const product = products[0];
     if (!product) {
       res.redirect('/');
     }
@@ -55,43 +58,43 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
   Product.findByPk(prodId)
-  .then(product =>{
-    product.title = updatedTitle;
-    product.price = updatedPrice;
-    product.imageUrl = updatedImageUrl;
-    product.description = updatedDesc;
-   return product.save(); //provided by sequelize to save the data to DB
-  })
-  .then(result =>{
-    console.log('Product updated successfully');
-    res.redirect('/admin/products');
-  })
-  .catch(err => console.log(err));
+    .then(product => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.imageUrl = updatedImageUrl;
+      product.description = updatedDesc;
+      return product.save(); //provided by sequelize to save the data to DB
+    })
+    .then(result => {
+      console.log('Product updated successfully');
+      res.redirect('/admin/products');
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
-  .then(products=>{
-    res.render('admin/products', {
-      prods: products,
-      pageTitle: 'Admin Products', // used in header
-      path: '/admin/products', // to set active path
+  req.user.getProducts()
+    .then(products => {
+      res.render('admin/products', {
+        prods: products,
+        pageTitle: 'Admin Products', // used in header
+        path: '/admin/products', // to set active path
+      });
+    })
+    .catch(err => {
+      console.log(err);
     });
-  })
-  .catch(err => {
-    console.log(err);
-  });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findByPk(prodId)
-  .then(product=>{
-    return product.destroy();
-  })
-  .then(result =>{
-    console.log('product deleted successfully');
-    res.redirect('/admin/products');
-  })
-  .catch(err => console.log(err));
+    .then(product => {
+      return product.destroy();
+    })
+    .then(result => {
+      console.log('product deleted successfully');
+      res.redirect('/admin/products');
+    })
+    .catch(err => console.log(err));
 };

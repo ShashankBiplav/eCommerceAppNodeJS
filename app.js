@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'public'))); // path created to access public directory
 
 app.use((req, res, next)=>{
-    then(user=>{
+    User.findByPk(1).then(user=>{
         req.user= user;
         next();
     }).catch(err=>{console.log(err)});    
