@@ -6,15 +6,16 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error.js');
 
-const mongoConnect = require('./util/database.js');
+const mongoConnect = require('./util/database.js').mongoConnect;
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-// const adminRoutes = require('./routes/admin.js');
-// const shopRoutes = require('./routes/shop.js');
+
+const adminRoutes = require('./routes/admin.js');
+const shopRoutes = require('./routes/shop.js');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -25,16 +26,16 @@ app.use((req, res, next)=>{
     // User.findByPk(1).then(user=>{
     //     req.user= user;
     //     next();
-    // }).catch(err=>{console.log(err)});    
+    // }).catch(err=>{console.log(err)}); 
+    next();   
 });
 
-// app.use('/admin', adminRoutes); //filtering the path via ->  /admin
+app.use('/admin', adminRoutes); //filtering the path via ->  /admin
 
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 app.use(errorController.get404page);
 
-mongoConnect((client)=>{
-    console.log(client);
+mongoConnect(()=>{
     app.listen(3000);
 });
