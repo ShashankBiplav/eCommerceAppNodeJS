@@ -1,3 +1,5 @@
+const mongodb = require('mongodb');
+
 const getDb = require('../util/database.js').getDb;
 
 class Product{
@@ -26,6 +28,16 @@ class Product{
     })
     .catch(err=>console.log(err)); //only use toArray() when the quantity is small
     //implement pagination methodologyh later
+  }
+  static findById(productId){
+    const db =getDb();
+    return db.collection('products').find({_id: new mongodb.ObjectId(productId)}) //accessing _id MongoDB object correctly
+    .next()
+    .then(product=>{
+      console.log(product);
+      return product;
+    })
+    .catch(err=>console.log(err));
   }
 }
 
