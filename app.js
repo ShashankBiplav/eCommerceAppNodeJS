@@ -8,6 +8,8 @@ const errorController = require('./controllers/error.js');
 
 const mongoConnect = require('./util/database.js').mongoConnect;
 
+const User = require('./models/user.js');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -23,11 +25,10 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'public'))); // path created to access public directory
 
 app.use((req, res, next)=>{
-    // User.findByPk(1).then(user=>{
-    //     req.user= user;
-    //     next();
-    // }).catch(err=>{console.log(err)}); 
-    next();   
+    User.findById("5efee95755793a24e8e4f6b9").then(user=>{
+        req.user= user;
+        next();
+    }).catch(err=>{console.log(err)});   
 });
 
 app.use('/admin', adminRoutes); //filtering the path via ->  /admin
@@ -37,5 +38,6 @@ app.use(shopRoutes);
 app.use(errorController.get404page);
 
 mongoConnect(()=>{
+   
     app.listen(3000);
 });
