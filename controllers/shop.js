@@ -77,41 +77,49 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  let fetchedCart;
-  let newQuantity = 1;
-  req.user.getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts({
-        where: {
-          id: productId
-        }
-      });
-    })
-    .then(products => {
-      let product;
-      if (products.length > 0) {
-        product = products[0];
-      }
-      if (product) { //if we have existing product in the cart then increase quantity
-        const oldQuantity = product.cartItem.quantity;
-        newQuantity = oldQuantity + 1;
-        return product;
-      }
-      //if we add product in the cart for the first time
-      return Product.findByPk(productId);
-    })
-    .then(product => {
-      return fetchedCart.addProduct(product, {
-        through: {
-          quantity: newQuantity
-        }
-      });
-    })
-    .then(() => {
-      res.redirect('/cart');
-    })
-    .catch(err => console.log(err));
+  Product.findById(productId)
+  .then(product=>{
+    return req.user.addToCart(product);
+  })
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err =>console.log(err));
+  // let fetchedCart;
+  // let newQuantity = 1;
+  // req.user.getCart()
+  //   .then(cart => {
+  //     fetchedCart = cart;
+  //     return cart.getProducts({
+  //       where: {
+  //         id: productId
+  //       }
+  //     });
+  //   })
+  //   .then(products => {
+  //     let product;
+  //     if (products.length > 0) {
+  //       product = products[0];
+  //     }
+  //     if (product) { //if we have existing product in the cart then increase quantity
+  //       const oldQuantity = product.cartItem.quantity;
+  //       newQuantity = oldQuantity + 1;
+  //       return product;
+  //     }
+  //     //if we add product in the cart for the first time
+  //     return Product.findByPk(productId);
+  //   })
+  //   .then(product => {
+  //     return fetchedCart.addProduct(product, {
+  //       through: {
+  //         quantity: newQuantity
+  //       }
+  //     });
+  //   })
+  //   .then(() => {
+  //     res.redirect('/cart');
+  //   })
+  //   .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {

@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // path created to acce
 
 app.use((req, res, next)=>{
     User.findById("5efee95755793a24e8e4f6b9").then(user=>{
-        req.user= user;
+        req.user= new User(user.name, user.email, user.cart, user._id);
         next();
     }).catch(err=>{console.log(err)});   
 });
