@@ -25,10 +25,10 @@ class User {
         let newQuantity = 1;
         const updatedCartItems = [...this.cart.items];
 
-        if(cartProductIndex>=0){
+        if (cartProductIndex >= 0) {
             newQuantity = this.cart.items[cartProductIndex].quantity + 1;
             updatedCartItems[cartProductIndex].quantity = newQuantity;
-        }else{
+        } else {
             updatedCartItems.push({
                 productId: new ObjectId(product._id),
                 quantity: newQuantity
@@ -45,6 +45,30 @@ class User {
                 cart: updatedCart
             }
         });
+    }
+    getCart() {
+        const db = getDb();
+        const productIds = this.cart.items.map(item => {
+            return item.productId
+        });
+        return db
+            .collection('products')
+            .find({
+                _id: {
+                    $in: productIds
+                }
+            })
+            .toArray()
+            .then(products => {
+                return products.map(prod => {
+                    return {
+                        ...prod,
+                        quantity: this.cart.items.find(itm => {
+                            return itm.productId.toString() === prod._id.toString();
+                        }).quantity
+                    };
+                });
+            });
     }
     static findById(userId) {
         const db = getDb();
