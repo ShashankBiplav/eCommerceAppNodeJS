@@ -14,7 +14,7 @@ exports.postAddNewProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
-  const product =new Product({title: title, price: price, description: description, imageUrl: imageUrl});
+  const product =new Product({title: title, price: price, description: description, imageUrl: imageUrl, userId: req.user});
     product.save().then(result => { // save method automatically provided by mongoose
       console.log(result);
       res.redirect('/admin/products');
@@ -68,7 +68,10 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+  // .select('title price -_id')
+  // .populate('userId', 'name')
     .then(products => {
+      // console.log(products);
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products', // used in header
