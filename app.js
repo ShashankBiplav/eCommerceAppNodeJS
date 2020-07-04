@@ -40,7 +40,7 @@ app.use(shopRoutes);
 app.use(errorController.get404page);
 
 mongoose.connect('mongodb+srv://shashankbiplav:eCommerceNodeJS@ecommercenodejs.dcwx8.mongodb.net/eCommerceNodeJS?retryWrites=true&w=majority',
-        // {useUnifiedTopology:true, useNewUrlParser: true}
+         {useUnifiedTopology:true, useNewUrlParser: true}
     )
     .then(result => {
         User.findOne().then(user => {
