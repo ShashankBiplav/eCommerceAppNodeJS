@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error.js');
 
-const User = require('./models/user.js');
+// const User = require('./models/user.js');
 
 const app = express();
 
@@ -24,14 +24,14 @@ app.use(bodyParser.urlencoded({
 })); // yields a middleware function to parse the incoming requests
 app.use(express.static(path.join(__dirname, 'public'))); // path created to access public directory
 
-app.use((req, res, next) => {
-    User.findById("5efee95755793a24e8e4f6b9").then(user => {
-        req.user = new User(user.name, user.email, user.cart, user._id);
-        next();
-    }).catch(err => {
-        console.log(err)
-    });
-});
+// app.use((req, res, next) => {
+//     User.findById("5efee95755793a24e8e4f6b9").then(user => {
+//         req.user = new User(user.name, user.email, user.cart, user._id);
+//         next();
+//     }).catch(err => {
+//         console.log(err)
+//     });
+// });
 
 app.use('/admin', adminRoutes); //filtering the path via ->  /admin
 

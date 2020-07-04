@@ -8,14 +8,14 @@ const adminController = require('../controllers/admin.js');
 
 
 //   /admin/add-product ->GET request
-// router.get('/add-product', adminController.getAddProductPage);
+router.get('/add-product', adminController.getAddProductPage);
 
 // /admin/products -> GET request
 // router.get('/products', adminController.getProducts);
 
 
 //   /admin/add-product ->POST request
-// router.post('/add-product',adminController.postAddNewProduct);
+router.post('/add-product',adminController.postAddNewProduct);
 
 // router.get('/edit-product/:productId', adminController.getEditProductPage);
 
