@@ -6,7 +6,7 @@ exports.getAddProductPage = (req, res, next) => {
     pageTitle: 'Add Product', // used in header
     path: '/admin/add-product', // to set active path
     editing: false,
-    isAuthenticated: req.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn
   });
 };
 
@@ -15,7 +15,7 @@ exports.postAddNewProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
-  const product =new Product({title: title, price: price, description: description, imageUrl: imageUrl, userId: req.user});
+  const product =new Product({title: title, price: price, description: description, imageUrl: imageUrl, userId: req.session.user});
     product.save().then(result => { // save method automatically provided by mongoose
       console.log(result);
       res.redirect('/admin/products');
@@ -42,7 +42,7 @@ exports.getEditProductPage = (req, res, next) => {
       path: '/admin/edit-product', // to set active path
       editing: editMode,
       product: product,
-      isAuthenticated: req.isLoggedIn
+      isAuthenticated: req.session.isLoggedIn
     });
   }).catch(err => console.log(err));
 };
@@ -78,7 +78,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin Products', // used in header
         path: '/admin/products', // to set active path
-        isAuthenticated: req.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
