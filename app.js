@@ -3,8 +3,8 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const errorController = require('./controllers/error.js');
 
@@ -25,6 +25,12 @@ app.use(bodyParser.urlencoded({
 })); // yields a middleware function to parse the incoming requests
 app.use(express.static(path.join(__dirname, 'public'))); // path created to access public directory
 
+app.use(session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false
+}));
+
 app.use((req, res, next) => {
     User.findById("5f0037429d3526136280ac57").then(user => {
         req.user = user;
@@ -42,9 +48,10 @@ app.use(authRoutes);
 
 app.use(errorController.get404page);
 
-mongoose.connect('mongodb+srv://shashankbiplav:eCommerceNodeJS@ecommercenodejs.dcwx8.mongodb.net/eCommerceNodeJS?retryWrites=true&w=majority',
-         {useUnifiedTopology:true, useNewUrlParser: true}
-    )
+mongoose.connect('mongodb+srv://shashankbiplav:eCommerceNodeJS@ecommercenodejs.dcwx8.mongodb.net/eCommerceNodeJS?retryWrites=true&w=majority', {
+        useUnifiedTopology: true,
+        useNewUrlParser: true
+    })
     .then(result => {
         User.findOne().then(user => {
             if (!user) {
