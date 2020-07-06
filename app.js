@@ -39,6 +39,20 @@ app.use(session({
     store: store
 }));
 
+app.use((req,res,next) =>{
+    if (!req.session.user) {
+       return next(); 
+    }
+    User.findById(req.session.user._id)
+        .then(user => {
+            req.user =  user;
+            next();
+        })
+        .catch(err => {
+            console.log(err)
+        });
+});
+
 app.use('/admin', adminRoutes); //filtering the path via ->  /admin
 
 app.use(shopRoutes);

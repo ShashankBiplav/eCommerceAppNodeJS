@@ -15,7 +15,7 @@ exports.postAddNewProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
-  const product =new Product({title: title, price: price, description: description, imageUrl: imageUrl, userId: req.session.user});
+  const product =new Product({title: title, price: price, description: description, imageUrl: imageUrl, userId: req.user});
     product.save().then(result => { // save method automatically provided by mongoose
       console.log(result);
       res.redirect('/admin/products');
