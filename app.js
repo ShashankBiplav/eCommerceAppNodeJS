@@ -66,18 +66,6 @@ mongoose.connect(MONGODB_URI, {
         useNewUrlParser: true
     })
     .then(result => {
-        User.findOne().then(user => {
-            if (!user) {
-                const user = new User({
-                    name: 'Shashank Biplav',
-                    email: 'shashankbiplav@gmail.com',
-                    cart: {
-                        items: []
-                    }
-                });
-                user.save();
-            }
-        })
         app.listen(3000);
     })
     .catch(err => console.log(err));
