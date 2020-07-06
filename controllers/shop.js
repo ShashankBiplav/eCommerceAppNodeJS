@@ -50,19 +50,19 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   // console.log(req.user.cart);
-  req.user.populate('cart.items.productId')
-    .then(prods=> {
-      const products = req.user.cart.items;
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: products, 
-        isAuthenticated: req.session.isLoggedIn
-      });
-    })
-    .catch(err => {
-      console.log(err)
+  req.user
+  .populate('cart.items.productId')
+  .execPopulate()
+  .then(user => {
+    const products = user.cart.items;
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      products: products,
+      isAuthenticated: req.session.isLoggedIn
     });
+  })
+  .catch(err => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
