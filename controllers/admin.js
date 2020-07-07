@@ -6,7 +6,6 @@ exports.getAddProductPage = (req, res, next) => {
     pageTitle: 'Add Product', // used in header
     path: '/admin/add-product', // to set active path
     editing: false,
-    isAuthenticated: req.session.isLoggedIn
   });
 };
 
@@ -42,7 +41,6 @@ exports.getEditProductPage = (req, res, next) => {
       path: '/admin/edit-product', // to set active path
       editing: editMode,
       product: product,
-      isAuthenticated: req.session.isLoggedIn
     });
   }).catch(err => console.log(err));
 };
@@ -78,7 +76,6 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin Products', // used in header
         path: '/admin/products', // to set active path
-        isAuthenticated: req.session.isLoggedIn
       });
     })
     .catch(err => {
