@@ -40,8 +40,6 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: 'Shop', // used in header
         path: '/', // to set active path
-        isAuthenticated: req.session.isLoggedIn,
-        csrfToken : req.csrfToken()
       });
     })
     .catch(err => {

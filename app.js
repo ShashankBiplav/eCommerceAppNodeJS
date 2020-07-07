@@ -29,6 +29,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
 const authRoutes = require('./routes/auth.js');
+const { use } = require('./routes/admin.js');
 
 app.use(bodyParser.urlencoded({
     extended: false
@@ -57,6 +58,14 @@ app.use((req,res,next) =>{
             console.log(err)
         });
 });
+
+app.use((req, res, next)=>{ // provided by express
+    // .locals attaches to every res because they only exist in views that are rendered
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+    
 
 app.use('/admin', adminRoutes); //filtering the path via ->  /admin
 
