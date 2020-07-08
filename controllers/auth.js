@@ -108,7 +108,7 @@ exports.postSignup = (req, res, next) => {
                     });
                     return user.save();
                 }).then(result => {
-                    // res.redirect('/login');
+                     res.redirect('/login');
                     //     transporter.sendMail({
                     //         to: email,
                     //         from: 'thesuperdroidhandler@gmail.com',
@@ -117,20 +117,24 @@ exports.postSignup = (req, res, next) => {
                     //     }).catch(err=>console.log(err));
 
 
-
-
-                    var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail({
-                        to: email,
-                        from:'hi@thesuperdroid.com',
-                        message: '<h1>Sign up successful</h1>'
-                    }); // SendSmtpEmail | Values to send a transactional email
-
-                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-                        console.log('API called successfully. Returned data: ' + data);
-                    }, function (error) {
-                        console.error(error);
+                    sendSmtpEmail = {
+                        to: [{
+                            email: email,
+                            name: email
+                        }],
+                        templateId: 4,
+                        params: {
+                            name: 'John',
+                            surname: 'Doe'
+                        },
+                        subject: 'Sign up successful'
+                    };
+                    
+                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
+                      console.log('API called successfully. Email Sent. Returned data: ' + data);
+                    }, function(error) {
+                      console.error(error);
                     });
-
 
 
                 });
