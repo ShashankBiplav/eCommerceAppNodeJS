@@ -1,27 +1,20 @@
-const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
+ const crypto = require('crypto');
 
-// const sendinBlue = require('nodemailer-sendinblue-transport');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/user.js');
 
 
+var SibApiV3Sdk = require('sib-api-v3-sdk');
+var defaultClient = SibApiV3Sdk.ApiClient.instance;
+// Configure API key authorization: api-key
+var apiKey = defaultClient.authentications['api-key'];
+apiKey.apiKey = "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"
+// Configure API key authorization: partner-key
+var partnerKey = defaultClient.authentications['partner-key'];
+partnerKey.apiKey = "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"
+var apiInstance = new SibApiV3Sdk.SMTPApi();
 
-                    var SibApiV3Sdk = require('sib-api-v3-sdk');
-                    var defaultClient = SibApiV3Sdk.ApiClient.instance;
-                    // Configure API key authorization: api-key
-                    var apiKey = defaultClient.authentications['api-key'];
-                    apiKey.apiKey = "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"
-                    // Configure API key authorization: partner-key
-                    var partnerKey = defaultClient.authentications['partner-key'];
-                    partnerKey.apiKey = "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"
-                    var apiInstance = new SibApiV3Sdk.SMTPApi();
-
-// const transporter = nodemailer.createTransport(sendinBlue({
-//     auth: {
-//         apiKey: 'dCjEBqOkxrz6ADLH'
-//     }
-// }));
 
 exports.getLogin = (req, res, next) => {
     let message = req.flash('error');
@@ -108,7 +101,7 @@ exports.postSignup = (req, res, next) => {
                     });
                     return user.save();
                 }).then(result => {
-                     res.redirect('/login');
+                    res.redirect('/login');
                     //     transporter.sendMail({
                     //         to: email,
                     //         from: 'thesuperdroidhandler@gmail.com',
@@ -129,11 +122,11 @@ exports.postSignup = (req, res, next) => {
                         },
                         subject: 'Sign up successful'
                     };
-                    
-                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function(data) {
-                      console.log('API called successfully. Email Sent. Returned data: ' + data);
-                    }, function(error) {
-                      console.error(error);
+
+                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                        console.log('API called successfully. Email Sent. Returned data: ' + data);
+                    }, function (error) {
+                        console.error(error);
                     });
 
 
@@ -149,7 +142,7 @@ exports.postLogout = (req, res, next) => {
     });
 };
 
-exports.getReset = (req, res, next)=>{
+exports.getReset = (req, res, next) => {
     let message = req.flash('error');
     if (message.length > 0) {
         message = message[0];
@@ -160,5 +153,48 @@ exports.getReset = (req, res, next)=>{
         path: '/reset',
         pageTitle: 'Reset Password',
         errorMessage: message
+    });
+};
+
+exports.postReset = (req, res, next) => {
+    crypto.randomBytes(32, (error, buffer)=>{
+        if (error){
+            console.log(error);
+            return res.redirect('/reset');
+        }
+        const token = buffer.toString('hex');
+        User.findOne({email: req.body.email})
+        .then(user=>{
+            if (!user) {
+                req.flash('error','No account with that email found');
+                return res.redirect('/reset');
+            }
+            user.resetToken = token;
+            user.resetTokenExpiryDate = Date.now() + 3600000;
+            return user.save();
+        })
+        .then(result=>{
+            res.redirect('/');
+            sendSmtpEmail = {
+                to: [{
+                    email: req.body.email,
+                    name: req.body.email
+                }],
+                templateId: 5,
+                params: {
+                    EMAIL: req.body.email,
+                    RESETLINK:`http://localhost:3000/reset/${token}`
+                },
+                subject: 'Reset Password'
+            };
+
+            apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                console.log('API called successfully. Email Sent. Returned data: ' + data);
+            }, function (error) {
+                console.error(error);
+            });
+
+        })
+        .catch(err=>console.log(err));
     });
 };
