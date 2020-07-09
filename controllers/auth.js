@@ -2,6 +2,8 @@
 
  const bcrypt = require('bcryptjs');
 
+ const expressValidator = require('express-validator');
+
  const User = require('../models/user.js');
 
 
@@ -81,6 +83,15 @@
      const email = req.body.email;
      const password = req.body.password;
      const confirmPassword = req.body.confirmPassword;
+     const errors = expressValidator.validationResult(req);
+     console.log(errors.array());
+     if (!errors.isEmpty()) {
+        return res.status(422).render('auth/signup', {
+            path: '/signup',
+            pageTitle: 'SignUp',
+            errorMessage: errors.array()[0].msg
+        });
+     }
      User.findOne({
              email: email
          })
