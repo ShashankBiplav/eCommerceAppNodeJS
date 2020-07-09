@@ -42,7 +42,14 @@
      res.render('auth/signup', {
          path: '/signup',
          pageTitle: 'SignUp',
-         errorMessage: message
+         errorMessage: message,
+         oldInput: {
+            email: '',
+            password: '',
+            confirmPassword: ''
+        },
+        validationErrors:[]
+
      });
  };
 
@@ -51,12 +58,12 @@
      const password = req.body.password;
      const errors = expressValidator.validationResult(req);
      if (!errors.isEmpty()) {
-        return res.status(422).render('auth/login', {
-            path: '/login',
-            pageTitle: 'Login',
-            errorMessage: errors.array()[0].msg
-        });
-    }
+         return res.status(422).render('auth/login', {
+             path: '/login',
+             pageTitle: 'Login',
+             errorMessage: errors.array()[0].msg
+         });
+     }
      User.findOne({
              email: email
          })
@@ -91,12 +98,17 @@
      const email = req.body.email;
      const password = req.body.password;
      const errors = expressValidator.validationResult(req);
-     console.log(errors.array());
      if (!errors.isEmpty()) {
          return res.status(422).render('auth/signup', {
              path: '/signup',
              pageTitle: 'SignUp',
-             errorMessage: errors.array()[0].msg
+             errorMessage: errors.array()[0].msg,
+             oldInput: {
+                 email: email,
+                 password: password,
+                 confirmPassword: req.body.confirmPassword
+             },
+             validationErrors: errors.array()
          });
      }
      bcrypt
