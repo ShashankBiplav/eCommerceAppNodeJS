@@ -12,11 +12,16 @@ router.get('/login', authController.getLogin);
 
 router.get('/signup', authController.getSignup);
 
-router.post('/login', authController.postLogin);
+router.post('/login', [
+    expressValidator.check('email').isEmail().withMessage('Please enter a valid Email'),
+    expressValidator.check('password','Please enter a valid password').isLength({ min: 5}).isAlphanumeric()
+], authController.postLogin);
 
 router.post('/signup', [
     expressValidator.check('email').isEmail().withMessage('Please enter a valid Email')
-    .custom((value, {req}) => {
+    .custom((value, {
+        req
+    }) => {
         return User.findOne({
             email: value
         }).then((userDoc) => {
@@ -25,7 +30,7 @@ router.post('/signup', [
             }
         })
     }),
-    expressValidator.check('password', 'Please enter a password with njmber and text and at least 5 characters long').isLength({
+    expressValidator.check('password', 'Please enter a password with number and text and at least 5 characters long').isLength({
         min: 5
     }).isAlphanumeric(),
     expressValidator.check('confirmPassword').custom((value, {
