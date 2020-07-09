@@ -82,68 +82,47 @@
  exports.postSignup = (req, res, next) => {
      const email = req.body.email;
      const password = req.body.password;
-     const confirmPassword = req.body.confirmPassword;
      const errors = expressValidator.validationResult(req);
      console.log(errors.array());
      if (!errors.isEmpty()) {
-        return res.status(422).render('auth/signup', {
-            path: '/signup',
-            pageTitle: 'SignUp',
-            errorMessage: errors.array()[0].msg
-        });
+         return res.status(422).render('auth/signup', {
+             path: '/signup',
+             pageTitle: 'SignUp',
+             errorMessage: errors.array()[0].msg
+         });
      }
-     User.findOne({
-             email: email
+     bcrypt
+         .hash(password, 12)
+         .then(hashedPassword => {
+             const user = new User({
+                 email: email,
+                 password: hashedPassword,
+                 cart: {
+                     items: []
+                 }
+             });
+             return user.save();
+         }).then(result => {
+             res.redirect('/login');
+             sendSmtpEmail = {
+                 to: [{
+                     email: email,
+                     name: email
+                 }],
+                 templateId: 4,
+                 params: {
+                     name: 'John',
+                     surname: 'Doe'
+                 },
+                 subject: 'Sign up successful'
+             };
+
+             apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                 console.log('API call successful. Email Sent. Returned data: ' + data);
+             }, function (error) {
+                 console.error(error);
+             });
          })
-         .then((userDoc) => {
-             if (userDoc) {
-                 req.flash('error', 'Email already exists');
-                 return res.redirect('/signup');
-             }
-             return bcrypt
-                 .hash(password, 12)
-                 .then(hashedPassword => {
-                     const user = new User({
-                         email: email,
-                         password: hashedPassword,
-                         cart: {
-                             items: []
-                         }
-                     });
-                     return user.save();
-                 }).then(result => {
-                     res.redirect('/login');
-                     //     transporter.sendMail({
-                     //         to: email,
-                     //         from: 'thesuperdroidhandler@gmail.com',
-                     //         subject: 'Sign up Successful',
-                     //         html: '<h1>Sign up successful</h1>'
-                     //     }).catch(err=>console.log(err));
-
-
-                     sendSmtpEmail = {
-                         to: [{
-                             email: email,
-                             name: email
-                         }],
-                         templateId: 4,
-                         params: {
-                             name: 'John',
-                             surname: 'Doe'
-                         },
-                         subject: 'Sign up successful'
-                     };
-
-                     apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-                         console.log('API call successful. Email Sent. Returned data: ' + data);
-                     }, function (error) {
-                         console.error(error);
-                     });
-
-
-                 });
-         })
-         .catch(err => console.log(err));
  };
 
  exports.postLogout = (req, res, next) => {
@@ -245,25 +224,27 @@
      const passwordToken = req.body.passwordToken;
      let resetUser;
 
-  User.findOne({
-    resetToken: passwordToken,
-    resetTokenExpiryDate: { $gt: Date.now() },
-    _id: userId
-  })
-    .then(user => {
-      resetUser = user;
-      return bcrypt.hash(newPassword, 12);
-    })
-    .then(hashedPassword => {
-      resetUser.password = hashedPassword;
-      resetUser.resetToken = undefined;
-      resetUser.resetTokenExpiryDate = undefined;
-      return resetUser.save();
-    })
-    .then(result => {
-      res.redirect('/login');
-    })
-    .catch(err => {
-      console.log(err);
-    });
+     User.findOne({
+             resetToken: passwordToken,
+             resetTokenExpiryDate: {
+                 $gt: Date.now()
+             },
+             _id: userId
+         })
+         .then(user => {
+             resetUser = user;
+             return bcrypt.hash(newPassword, 12);
+         })
+         .then(hashedPassword => {
+             resetUser.password = hashedPassword;
+             resetUser.resetToken = undefined;
+             resetUser.resetTokenExpiryDate = undefined;
+             return resetUser.save();
+         })
+         .then(result => {
+             res.redirect('/login');
+         })
+         .catch(err => {
+             console.log(err);
+         });
  };
