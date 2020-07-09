@@ -13,8 +13,8 @@ router.get('/login', authController.getLogin);
 router.get('/signup', authController.getSignup);
 
 router.post('/login', [
-    expressValidator.check('email').isEmail().withMessage('Please enter a valid Email'),
-    expressValidator.check('password','Please enter a valid password').isLength({ min: 5}).isAlphanumeric()
+    expressValidator.check('email').isEmail().withMessage('Please enter a valid Email').normalizeEmail(),
+    expressValidator.check('password','Please enter a valid password').isLength({ min: 5}).isAlphanumeric().trim()
 ], authController.postLogin);
 
 router.post('/signup', [
@@ -29,10 +29,10 @@ router.post('/signup', [
                 return Promise.reject('Email already exists');
             }
         })
-    }),
+    }).normalizeEmail(),
     expressValidator.check('password', 'Please enter a password with number and text and at least 5 characters long').isLength({
         min: 5
-    }).isAlphanumeric(),
+    }).isAlphanumeric().trim(),
     expressValidator.check('confirmPassword').custom((value, {
         req
     }) => {
@@ -40,7 +40,7 @@ router.post('/signup', [
             throw new Error('Passwords have to match');
         }
         return true;
-    })
+    }).trim()
 ], authController.postSignup);
 
 router.post('/logout', authController.postLogout);
