@@ -15,7 +15,7 @@ exports.getAddProductPage = (req, res, next) => {
 
 exports.postAddNewProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.body.image;
   const description = req.body.description;
   const price = req.body.price;
   const errors = expressValidator.validationResult(req);

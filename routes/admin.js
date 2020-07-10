@@ -20,7 +20,7 @@ router.get('/products',isAuth, adminController.getProducts);
 //   /admin/add-product ->POST request
 router.post('/add-product',[
     expressValidator.check('title', 'Invalid title').isString().isLength({min:3}).trim(),
-    expressValidator.check('imageUrl', 'Invalid imageUrl').isURL(),
+    expressValidator.check('imageUrl', 'Invalid image'),
     expressValidator.check('price', 'Invalid price').isFloat(),
     expressValidator.check('description', 'Invalid description').isLength({min:10, max:500}).trim()
 ],isAuth,adminController.postAddNewProduct);
