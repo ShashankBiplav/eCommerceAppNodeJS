@@ -2,6 +2,8 @@ const path = require('path');
 
 const express = require('express');
 
+const expressValidator = require('express-validator');
+
 const router = express.Router();
 
 const adminController = require('../controllers/admin.js');
@@ -16,11 +18,21 @@ router.get('/products',isAuth, adminController.getProducts);
 
 
 //   /admin/add-product ->POST request
-router.post('/add-product',isAuth,adminController.postAddNewProduct);
+router.post('/add-product',[
+    expressValidator.check('title', 'Invalid title').isString().isLength({min:3}).trim(),
+    expressValidator.check('imageUrl', 'Invalid imageUrl').isURL(),
+    expressValidator.check('price', 'Invalid price').isFloat(),
+    expressValidator.check('description', 'Invalid description').isLength({min:10, max:500}).trim()
+],isAuth,adminController.postAddNewProduct);
 
 router.get('/edit-product/:productId',isAuth, adminController.getEditProductPage);
 
-router.post('/edit-product',isAuth, adminController.postEditProduct);
+router.post('/edit-product',[
+    expressValidator.check('title','Invalid title').isString().isLength({min:3}).trim(),
+    expressValidator.check('imageUrl', 'Invalid imageUrl').isURL(),
+    expressValidator.check('price', 'Invalid price').isFloat(),
+    expressValidator.check('description', 'Invalid description').isLength({min:10, max:500}).trim()
+],isAuth, adminController.postEditProduct);
 
 router.post('/delete-product',isAuth, adminController.postDeleteProduct);
 
