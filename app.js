@@ -8,6 +8,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const errorController = require('./controllers/error.js');
 
@@ -23,6 +24,8 @@ const store = new MongoDBStore({
 
 const csrfProtection = csrf();
 
+const fileStorage = multer.diskStorage({destination:, fileName: });
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -34,6 +37,9 @@ const { use } = require('./routes/admin.js');
 app.use(bodyParser.urlencoded({
     extended: false
 })); // yields a middleware function to parse the incoming requests
+
+app.use(multer({dest: 'images'}).single('image')); // single input with name 'image' is expected in ejs... therefore this
+
 app.use(express.static(path.join(__dirname, 'public'))); // path created to access public directory
 
 app.use(session({

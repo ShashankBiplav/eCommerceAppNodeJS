@@ -15,9 +15,10 @@ exports.getAddProductPage = (req, res, next) => {
 
 exports.postAddNewProduct = (req, res, next) => {
   const title = req.body.title;
-  const image = req.body.image;
+  const image = req.file;
   const description = req.body.description;
   const price = req.body.price;
+  console.log(image);
   const errors = expressValidator.validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
