@@ -26,7 +26,6 @@ const csrfProtection = csrf();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-
 const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
 const authRoutes = require('./routes/auth.js');
@@ -48,6 +47,13 @@ app.use(csrfProtection);
 
 app.use(flash());
 
+app.use((req, res, next)=>{ // provided by express
+    // .locals attaches to every res because they only exist in views that are rendered
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
 app.use((req,res,next) =>{
     if (!req.session.user) {
        return next(); 
@@ -61,18 +67,10 @@ app.use((req,res,next) =>{
             next();
         })
         .catch(err => {
-            throw new Error(err);
+            next(new Error(err)); // inside async codes use this way of error handling instead
         });
 });
-
-app.use((req, res, next)=>{ // provided by express
-    // .locals attaches to every res because they only exist in views that are rendered
-    res.locals.isAuthenticated = req.session.isLoggedIn;
-    res.locals.csrfToken = req.csrfToken();
-    next();
-});
     
-
 app.use('/admin', adminRoutes); //filtering the path via ->  /admin
 
 app.use(shopRoutes);
@@ -84,7 +82,11 @@ app.use('/500',errorController.get500page);
 app.use(errorController.get404page);
 
 app.use((error, req, res, next)=>{
-    res.redirect('/500');
+    res.status(500).render('500.ejs', {
+        pageTitle: 'Error !',
+        path: '/500',
+        isAuthenticated: req.session.isLoggedIn
+    });
 });
 
 mongoose.connect(MONGODB_URI, {

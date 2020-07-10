@@ -29,7 +29,10 @@
          path: '/login',
          pageTitle: 'Login',
          errorMessage: message,
-         oldInput:{email: '', password: ''},
+         oldInput: {
+             email: '',
+             password: ''
+         },
          validationErrors: []
      });
  };
@@ -46,11 +49,11 @@
          pageTitle: 'SignUp',
          errorMessage: message,
          oldInput: {
-            email: '',
-            password: '',
-            confirmPassword: ''
-        },
-        validationErrors:[]
+             email: '',
+             password: '',
+             confirmPassword: ''
+         },
+         validationErrors: []
 
      });
  };
@@ -64,7 +67,10 @@
              path: '/login',
              pageTitle: 'Login',
              errorMessage: errors.array()[0].msg,
-             oldInput:{email: email, password: password},
+             oldInput: {
+                 email: email,
+                 password: password
+             },
              validationErrors: errors.array()
          });
      }
@@ -74,12 +80,15 @@
          .then(user => {
              if (!user) {
                  return res.status(422).render('auth/login', {
-                    path: '/login',
-                    pageTitle: 'Login',
-                    errorMessage: 'Invalid email or password.',
-                    oldInput:{email: email, password: password},
-                    validationErrors: []
-                });
+                     path: '/login',
+                     pageTitle: 'Login',
+                     errorMessage: 'Invalid email or password.',
+                     oldInput: {
+                         email: email,
+                         password: password
+                     },
+                     validationErrors: []
+                 });
              }
              bcrypt.compare(password, user.password)
                  .then(passwordMatch => { // comapare returns boolean if the password matches
@@ -92,12 +101,15 @@
                          });
                      }
                      return res.status(422).render('auth/login', {
-                        path: '/login',
-                        pageTitle: 'Login',
-                        errorMessage: 'Invalid email or password.',
-                        oldInput:{email: email, password: password},
-                        validationErrors: []
-                    });
+                         path: '/login',
+                         pageTitle: 'Login',
+                         errorMessage: 'Invalid email or password.',
+                         oldInput: {
+                             email: email,
+                             password: password
+                         },
+                         validationErrors: []
+                     });
                  })
                  .catch(err => {
                      console.log(err);
@@ -105,7 +117,9 @@
                  });
          })
          .catch(err => {
-             console.log(err)
+             const error = new Error(err);
+             error.httpStatusCode = 500;
+             return next(error);
          });
  };
 
@@ -154,8 +168,10 @@
 
              apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
                  console.log('API call successful. Email Sent. Returned data: ' + data);
-             }, function (error) {
-                 console.error(error);
+             }, function (err) {
+                 const error = new Error(err);
+                 error.httpStatusCode = 500;
+                 return next(error);
              });
          })
  };
@@ -222,7 +238,11 @@
                  });
 
              })
-             .catch(err => console.log(err));
+             .catch(err => {
+                 const error = new Error(err);
+                 error.httpStatusCode = 500;
+                 return next(error);
+             });
      });
  };
 
@@ -249,7 +269,11 @@
                  passwordToken: token
              });
          })
-         .catch(err => console.log(err));
+         .catch(err => {
+             const error = new Error(err);
+             error.httpStatusCode = 500;
+             return next(error);
+         });
  };
 
  exports.postNewPassword = (req, res, next) => {
@@ -280,6 +304,8 @@
              res.redirect('/login');
          })
          .catch(err => {
-             console.log(err);
+             const error = new Error(err);
+             error.httpStatusCode = 500;
+             return next(error);
          });
  };
