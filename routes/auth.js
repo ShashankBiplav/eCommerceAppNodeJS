@@ -19,9 +19,7 @@ router.post('/login', [
 
 router.post('/signup', [
     expressValidator.check('email').isEmail().withMessage('Please enter a valid Email')
-    .custom((value, {
-        req
-    }) => {
+    .custom((value, {req}) => {
         return User.findOne({
             email: value
         }).then((userDoc) => {
