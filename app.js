@@ -56,6 +56,7 @@ app.use(bodyParser.urlencoded({
 app.use(multer({storage: fileStorage , fileFilter: fileFilter }).single('image')); // single input with name 'image' is expected in ejs... therefore this
 
 app.use(express.static(path.join(__dirname, 'public'))); // path created to access public directory
+app.use('/images',express.static(path.join(__dirname, 'images'))); 
 
 app.use(session({
     secret: 'my secret',
