@@ -19,18 +19,30 @@ exports.postAddNewProduct = (req, res, next) => {
   const description = req.body.description;
   const price = req.body.price;
   console.log(image);
-  const errors = expressValidator.validationResult(req);
-  if (!errors.isEmpty()) {
+  if (!image) { // checking if the file attached is an image
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product', 
       path: '/admin/add-product', 
       editing: false,
-      product: {title: title, imageUrl: imageUrl, description: description, price: price},
+      product: {title: title, description: description, price: price},
+      hasError: true,
+      errorMessage:'The file is not an image !',
+      validationErrors: []
+    });
+  }
+  const errors = expressValidator.validationResult(req);
+  if (!errors.isEmpty()) {// checking for other input errors
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product', 
+      path: '/admin/add-product', 
+      editing: false,
+      product: {title: title, description: description, price: price},
       hasError: true,
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array()
     });
   }
+  const imageUrl = image.path; //constructing image path for storing in DB
   const product = new Product({
     title: title,
     price: price,
@@ -83,7 +95,7 @@ exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
+  const image = req.file;
   const updatedDesc = req.body.description;
   const errors = expressValidator.validationResult(req);
   if (!errors.isEmpty()) {
@@ -91,7 +103,7 @@ exports.postEditProduct = (req, res, next) => {
       pageTitle: 'Edit Product', 
       path: '/admin/edit-product', 
       editing: true,
-      product: {title: updatedTitle, imageUrl: updatedImageUrl, description: updatedDesc, price: updatedPrice, _id:prodId},
+      product: {title: updatedTitle, description: updatedDesc, price: updatedPrice, _id:prodId},
       hasError: true,
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array()
@@ -105,7 +117,9 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      product.imageUrl = updatedImageUrl;
+      if (image) {
+        product.imageUrl = image.path;
+      }
       return product.save()
         .then(result => {
           console.log('Product updated successfully');
