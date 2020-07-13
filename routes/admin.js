@@ -32,7 +32,7 @@ router.post('/edit-product',[
     expressValidator.check('description', 'Invalid description').isLength({min:10, max:500}).trim()
 ],isAuth, adminController.postEditProduct);
 
-router.post('/delete-product',isAuth, adminController.postDeleteProduct);
+router.delete('/product/:productId',isAuth, adminController.deleteProduct);
 
 module.exports = router; //  exporting all properties of router properties therefore this syntax
  
