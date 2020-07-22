@@ -1,3 +1,5 @@
+//mongoDB password : eCommerceNodeJS
+
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -12,7 +14,7 @@ const errorController = require('./controllers/error.js');
 
 const User = require('./models/user.js');
 
-const MONGODB_URI = 'Your MongoDB url here';
+const MONGODB_URI = 'mongodb+srv://shashankbiplav:eCommerceNodeJS@ecommercenodejs.dcwx8.mongodb.net/eCommerceNodeJS?retryWrites=true&w=majority';
 
 const app = express();
 const store = new MongoDBStore({

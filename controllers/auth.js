@@ -11,10 +11,10 @@
  var defaultClient = SibApiV3Sdk.ApiClient.instance;
  // Configure API key authorization: api-key
  var apiKey = defaultClient.authentications['api-key'];
- apiKey.apiKey = "your provided api keys here"
+ apiKey.apiKey = "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"
  // Configure API key authorization: partner-key
  var partnerKey = defaultClient.authentications['partner-key'];
- partnerKey.apiKey = "your provided api keys here"
+ partnerKey.apiKey = "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"
  var apiInstance = new SibApiV3Sdk.SMTPApi();
 
 
