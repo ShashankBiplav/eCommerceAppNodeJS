@@ -14,11 +14,9 @@ const errorController = require('./controllers/error.js');
 
 const User = require('./models/user.js');
 
-const MONGODB_URI = 'mongodb+srv://shashankbiplav:eCommerceNodeJS@ecommercenodejs.dcwx8.mongodb.net/eCommerceNodeJS?retryWrites=true&w=majority';
-
 const app = express();
 const store = new MongoDBStore({
-    uri: MONGODB_URI,
+    uri: process.env.MONGODB_URI,
     collection: 'sessions'
 });
 
@@ -111,11 +109,11 @@ app.use((error, req, res, next)=>{
     });
 });
 
-mongoose.connect(MONGODB_URI, {
+mongoose.connect(process.env.MONGODB_URI, {
         useUnifiedTopology: true,
         useNewUrlParser: true
     })
     .then(result => {
-        app.listen(3000);
+        app.listen(process.env.PORT || 3000);
     })
     .catch(err => console.log(err));
