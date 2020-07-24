@@ -9,6 +9,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
 const multer = require('multer');
+const helmet = require('helmet');
 
 const errorController = require('./controllers/error.js');
 
@@ -46,6 +47,8 @@ const adminRoutes = require('./routes/admin.js');
 const shopRoutes = require('./routes/shop.js');
 const authRoutes = require('./routes/auth.js');
 const { use } = require('./routes/admin.js');
+
+app.use(helmet());
 
 app.use(bodyParser.urlencoded({
     extended: false
